@@ -32,8 +32,8 @@ function speechproc()
     for n = 3 : FN
 
         % 计算预测系数
-        s_w = s(n * FL - WL + 1 : n * FL) .* hw;  %汉明窗加权后的语音
-        [A E] = lpc(s_w, P);  %用线性预测法计算P个预测系数, A 是预测系数, E 被用来计算合成激励的能量
+        s_w = s(n * FL - WL + 1 : n * FL) .* hw;  % 汉明窗加权后的语音
+        [A E] = lpc(s_w, P);  % 用线性预测法计算 P 个预测系数, A 是预测系数, E 被用来计算合成激励的能量
 
         if n == 27
             % (3) 观察预测系统的零极点图
@@ -46,7 +46,7 @@ function speechproc()
         
         s_f = s((n - 1) * FL + 1 : n * FL);  % 本帧语音
 
-        % (4) 用filter函数 s_f 计算激励，注意保持滤波器状态
+        % (4) 用 filter 函数 s_f 计算激励，注意保持滤波器状态
         [exc((n - 1) * FL + 1 : n * FL), zi_pre] = filter(A, 1, s_f, zi_pre);
         
 
@@ -68,7 +68,7 @@ function speechproc()
         [s_syn_v((n - 1) * FL_v + 1 : n * FL_v), zi_syn_v] = filter(1, A, exc_syn_v((n - 1) * FL_v + 1 : n * FL_v), zi_syn_v);
         
 
-        % (13) 将基音周期减小一半，将共振峰频率增加150Hz，重新合成语音
+        % (13) 将基音周期减小一半，将共振峰频率增加 150 Hz，重新合成语音
         rot_A = sys_rot_gen(A, 150 * 2 * pi / 8000);
         exc_syn_t((n - 1) * FL + 1 : n * FL) = G * digit_sig_gen_const(round(PT / 2), FL);
         [s_syn_t((n - 1) * FL + 1 : n * FL), zi_syn_t] = filter(1, rot_A, exc_syn_t((n - 1) * FL + 1 : n * FL), zi_syn_t);
@@ -95,7 +95,7 @@ function speechproc()
     % plot the signals in time domain
     t = [1 : L] / 8000;
     titles = {'Original Signal', 'Excitation Signal', 'Reconstructed Signal'};
-    % sig_plot_t({s, exc, s_rec, t, titles);
+    % sig_plot_t({s, exc, s_rec}, t, titles);
     sig_plot_t({s, exc, s_rec}, t, titles, './report/asserts/1_6');
 
     % plot clipped signals in time domain
@@ -217,6 +217,8 @@ function speechproc()
     % sig_plot_f({fft(s), fft(s_syn_t)}, 4000, titles);
     sig_plot_f({fft(s), fft(s_syn_t)}, 4000, titles, './report/asserts/1_13_pitch_increased');
 
+
+
     % 保存所有文件
     writespeech('./report/asserts/exc.pcm',exc);
     writespeech('./report/asserts/rec.pcm',s_rec);
@@ -228,31 +230,6 @@ function speechproc()
     writespeech('./report/asserts/syn_v.pcm',s_syn_v);
 return
 
-
-function e = generate_e_addon(sr, N, seg_N)
-    e = zeros(N, 1);
-    idx = 1;
-    while idx <= N
-        e(idx) = 1;
-        seg_idx = floor(idx / seg_N);
-        PT = 80 + 5 * mod(seg_idx, 50);
-        idx = idx + PT;
-    end
-return
-
-function plot_signal(combined_signal, t, titles, save_path)
-    max_y = max(cellfun(@max, cellfun(@abs, combined_signal, 'UniformOutput', false)));
-    figure;
-    for i = 1:3
-        subplot(3, 1, i);
-        plot(t, combined_signal{i});
-        title(titles{i});
-        ylabel('Amplitude');
-        ylim([-max_y, max_y]);
-    end
-    xlabel('Time (s)');
-    saveas(gcf, save_path);
-return
 
 % 从PCM文件中读入语音
 function s = readspeech(filename, L)
@@ -268,7 +245,7 @@ function writespeech(filename,s)
     fclose(fid);
 return
 
-% 计算一段语音的基音周期，不要求掌握
+% 计算一段语音的基音周期
 function PT = findpitch(s)
     [B, A] = butter(5, 700/4000);
     s = filter(B, A, s);
