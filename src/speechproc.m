@@ -220,14 +220,14 @@ function speechproc()
 
 
     % 保存所有文件
-    writespeech('./report/asserts/exc.pcm',exc);
-    writespeech('./report/asserts/rec.pcm',s_rec);
-    writespeech('./report/asserts/exc_syn.pcm',exc_syn);
-    writespeech('./report/asserts/syn.pcm',s_syn);
-    writespeech('./report/asserts/exc_syn_t.pcm',exc_syn_t);
-    writespeech('./report/asserts/syn_t.pcm',s_syn_t);
-    writespeech('./report/asserts/exc_syn_v.pcm',exc_syn_v);
-    writespeech('./report/asserts/syn_v.pcm',s_syn_v);
+    writespeech('./resource/exc.pcm', exc);
+    writespeech('./resource/rec.pcm', s_rec);
+    writespeech('./resource/exc_syn.pcm', exc_syn);
+    writespeech('./resource/syn.pcm', s_syn);
+    writespeech('./resource/exc_syn_t.pcm', exc_syn_t);
+    writespeech('./resource/syn_t.pcm', s_syn_t);
+    writespeech('./resource/exc_syn_v.pcm', exc_syn_v);
+    writespeech('./resource/syn_v.pcm', s_syn_v);
 return
 
 
