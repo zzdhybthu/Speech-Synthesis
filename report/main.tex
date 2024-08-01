@@ -86,7 +86,7 @@
 
 \section{语音预测模型}
 
-\subsection{}\label{sec:1_1}
+\subsection{滤波器性质}\label{sec:1_1}
 
 给定
 \begin{align*}
@@ -191,7 +191,7 @@ title('Impulse Response of using Filter');
     }
 \end{figure}
 
-\subsection{}
+\subsection{阅读程序}
 
 该程序的基本流程如下：
 \begin{enumerate}[i]
@@ -205,7 +205,7 @@ title('Impulse Response of using Filter');
     \item 最后试听并画出所合成的语音，并保存文件。
 \end{enumerate}
 
-\subsection{}
+\subsection{观察零极点图}
 
 第 27 帧时绘制预测系统的零极点图：
 \begin{codeblock}{matlab}
@@ -226,7 +226,7 @@ end
     }\label{fig:1_3_zplane}
 \end{figure}
 
-\subsection{}
+\subsection{计算激励信号}
 
 用 \texttt{filter} 计算激励信号：
 \begin{codeblock}{matlab}
@@ -235,7 +235,7 @@ end
 
 注意到，这里记录了滤波器的状态，在下一帧作为初始状态使用，以保证连续性。
 
-\subsection{}
+\subsection{重建语音信号}
 
 用 \texttt{filter} 重建语音信号：
 \begin{codeblock}{matlab}
@@ -245,7 +245,7 @@ end
 同样，这里记录了滤波器的状态，在下一帧作为初始状态使用，以保证连续性。
 同时，重建系统是预测系统的逆系统，因此只需将 \texttt{filter} 的参数互换即可。
 
-\subsection{}
+\subsection{试听}
 
 试听程序：
 \begin{codeblock}{matlab}
@@ -362,7 +362,7 @@ sig_plot_f({fft(s), fft(exc), fft(s_rec)}, 8000, titles, './report/asserts/1_6')
 
 \section{语音合成模型}
 
-\subsection{}
+\subsection{单位样值串}
 
 对单位样值串 $x(n) = \sum_{i=0}^{NS-1}\delta(n-iN)$，采样频率 $sr = 8000 Hz$，基音频率 $f_0 = 200 Hz$，则基音周期 $N = sr / f_0 = 40$。
 若持续时间 $t = 1s$，则 $NS = f_0 \times t = 200$。
@@ -388,7 +388,7 @@ sig_sound([e200; e300], 8000);
 
 可以听到，300 Hz 的音调更高，约高半个八度。这与理论八度数 $\log_2(\frac{300}{200}) \approx 0.585$ 相符。
 
-\subsection{}
+\subsection{基音周期变化的单位样值串}
 
 利用循环生成基音周期按指定规律变化的单位样值串：
 \begin{codeblock}{matlab}
@@ -419,7 +419,7 @@ sig_sound(e_addon, 8000);
 
 听上去音调的确是逐渐变化的，且变化规律符合预期。
 
-\subsection{}
+\subsection{单位样值串通过滤波器}
 
 将此基音周期按指定规律变化的单位样值串作为合成激励，输入 \ref{sec:1_1} 中的滤波器：
 \begin{codeblock}{matlab}
@@ -449,7 +449,7 @@ sig_sound(s_addon, 8000);
     }\label{fig:1_9_signal_f}
 \end{figure}
 
-\subsection{}
+\subsection{合成激励和语音}
 
 合成激励与语音：
 \begin{codeblock}{matlab}
@@ -484,7 +484,7 @@ exc_syn((n - 1) * FL + 1 : n * FL) = G * digit_sig_gen_const(PT, FL);
 
 \section{变速不变调}
 
-\subsection{}
+\subsection{变速不变调}
 
 激励的长度增加一倍，即帧长增加一倍 \texttt{FL\_v = 2 * FL}：
 \begin{codeblock}{matlab}
@@ -516,7 +516,7 @@ exc_syn_v((n - 1) * FL_v + 1 : n * FL_v) = G * digit_sig_gen_const(PT, FL_v);
 
 \section{变调不变速}
 
-\subsection{}
+\subsection{提高共振峰频率}
 
 改变系统的共振峰频率：
 \begin{codeblock}{matlab}
@@ -553,7 +553,7 @@ rot_A = sys_rot_gen(A, 150 * 2 * pi / 8000);
 
 可见，共振峰频率约为$0.2876\times \pi\ rad/sample$，即 1150 Hz，与预期相符。
 
-\subsection{}
+\subsection{变调不变速}
 
 合成激励和语音：
 \begin{codeblock}{matlab}
